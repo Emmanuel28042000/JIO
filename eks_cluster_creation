@@ -1,0 +1,1 @@
+eksctl create cluster --name eks8 --region ap-south-1 --nodegroup-name eks8ng --node-type t2.medium --nodes 1 --managed
