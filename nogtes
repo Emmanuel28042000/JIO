@@ -1,0 +1,123 @@
+khalid.ansari@cloverinfotech.com
+Clover#54321
+
+
+https://dev.azure.com/khalidansari0807
+
+64is2mt7layzqmgmvq52gjy4ktxhu5gjd7d4eavdovi6ob5rhvma
+
+docker run -e AZP_URL="https://dev.azure.com/khalidansari0807" -e AZP_TOKEN="u6lfsfocwxukg5vqrjhcqvcwl7tcjqrfklo6jarhgd4cs4wvy24q" -e AZP_POOL="AKS" -e AZP_AGENT_NAME="Docker Agent - Linux" --name "azp-agent" azp-agent:latest
+
+sudo apt-get update -y
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash  
+az –version
+
+
+az acr login --name jioazuredevops.azurecr.io
+
+az acr login --name jioazuredevops.azurecr.io
+docker pull mcr.microsoft.com/hello-world
+docker tag mcr.microsoft.com/hello-world jioazuredevops.azurecr.io/hello-world:v1
+docker tag azp-agent:latest jioazuredevops.azurecr.io/azp-agent:v2
+
+docker push jioazuredevops.azurecr.io/azp-agent:v2
+
+
+kubectl create secret generic azdevops \
+  --from-literal=AZP_URL=https://dev.azure.com/khalidansari0807 \
+  --from-literal=AZP_TOKEN=u6lfsfocwxukg5vqrjhcqvcwl7tcjqrfklo6jarhgd4cs4wvy24q \
+  --from-literal=AZP_POOL=AKS
+
+
+
+
+eksctl create cluster --name eks8 --region ap-south-1 --nodegroup-name eks8ng --node-type t2.medium --nodes 1 --managed
+
+
+
+eksctl create cluster --name eks8 --region ap-south-1 --nodegroup-name eks8ng --node-type t2.medium --nodes 1 --managed
+
+
+eksctl create cluster --name pharmacy1cluster --region ap-south-1 --node-type t3.medium --nodes 2 --managed
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azdevops-deployment
+  labels:
+    app: azdevops-agent
+spec:
+  replicas: 1 # here is the configuration for the actual agent always running
+  selector:
+    matchLabels:
+      app: azdevops-agent
+  template:
+    metadata:
+      labels:
+        app: azdevops-agent
+    spec:
+      containers:
+      - name: kubepodcreation
+        image: jioazuredevops.azurecr.io/azp-agent:v1
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: azdevops
+                key: AZP_URL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: azdevops
+                key: AZP_TOKEN
+          - name: AZP_POOL
+            valueFrom:
+              secretKeyRef:
+                name: azdevops
+                key: AZP_POOL
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-volume
+      volumes:
+      - name: docker-volume
+        hostPath:
+          path: /var/run/docker.sock
+
+
+
+
+sqp_b1c182b3eaaaa2e1b5a47e306aca59cc1124c149
+
+mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=JIO_JAVA \
+  -Dsonar.projectName='JIO_JAVA' \
+  -Dsonar.host.url=http://20.55.29.28:9000 \
+  -Dsonar.token=sqp_b1c182b3eaaaa2e1b5a47e306aca59cc1124c149
+  
+trigger:
+- main  # Change this to your default branch as needed
+
+pool:
+  name: AKS  # Agent pool name
+  demands:
+    - Agent.Name -equals azdevops-deployment-6db549c8f9-tlf54  # Specify agent name
+
+variables:
+  SONARQUBE_TOKEN: 'sqp_b1c182b3eaaaa2e1b5a47e306aca59cc1124c149' # Secure variable in Azure DevOps
+  SONARQUBE_HOST: 'http://20.55.29.28:9000'  # Update with your SonarQube server URL
+  SONARQUBE_PROJECT_KEY: 'JIO_JAVA'  # Update with your project key
+  SONARQUBE_PROJECT_NAME: 'JIO_JAVA'  # Update with your project name
+
+steps:
+- checkout: self
+
+
+- script: |
+    mvn sonar:sonar \
+    -Dsonar.projectKey=$(SONARQUBE_PROJECT_KEY) \
+    -Dsonar.host.url=$(SONARQUBE_HOST) \
+    -Dsonar.login=$(SONARQUBE_TOKEN) \
+    -Dsonar.projectName=$(SONARQUBE_PROJECT_NAME)
+  displayName: 'Run SonarQube Analysis'
